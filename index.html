@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BJTノート — Luyện thi tiếng Nhật thương mại</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --washi: #F2ECE1;
+    --paper: #FBF8F2;
+    --ink: #2A2622;
+    --ink-soft: #5C554C;
+    --aizome: #26415C;
+    --aizome-soft: #3D5A7A;
+    --hanko: #A63A2E;
+    --hanko-dark: #7E2A21;
+    --kin: #B8923D;
+    --grid-line: rgba(38,65,92,0.09);
+    --ok: #3E7A52;
+    --line: rgba(42,38,34,0.12);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background-color: var(--washi);
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 26px 26px;
+    color: var(--ink);
+    font-family: 'Be Vietnam Pro', sans-serif;
+    min-height: 100vh;
+  }
+  .jp{ font-family:'Zen Kaku Gothic New', sans-serif; }
+  .disp{ font-family:'Shippori Mincho', serif; }
+
+  .wrap{ max-width: 880px; margin: 0 auto; padding: 22px 18px 60px; }
+
+  /* Header */
+  header{
+    display:flex; align-items:center; gap:16px;
+    padding: 6px 4px 20px;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 18px;
+  }
+  .seal{
+    width:52px; height:52px; flex:none; border-radius:8px;
+    background: var(--hanko);
+    color: #F6E9E4;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Shippori Mincho', serif; font-weight:800; font-size:24px;
+    box-shadow: 0 0 0 2px var(--hanko) inset, 0 2px 4px rgba(0,0,0,0.25);
+    transform: rotate(-3deg);
+    position:relative;
+  }
+  .seal::after{
+    content:"";
+    position:absolute; inset:4px;
+    border:1px solid rgba(246,233,228,0.55);
+    border-radius:5px;
+  }
+  header h1{
+    font-family:'Shippori Mincho', serif; font-weight:800;
+    font-size: 28px; margin:0; letter-spacing:0.5px; color:var(--ink);
+  }
+  header p{ margin: 2px 0 0; color: var(--ink-soft); font-size: 13.5px; }
+
+  /* Tabs */
+  nav.tabs{
+    display:flex; gap:6px; flex-wrap:wrap;
+    margin-bottom: 22px;
+    border-bottom: 1px solid var(--line);
+  }
+  nav.tabs button{
+    font-family:'Be Vietnam Pro', sans-serif;
+    font-weight:600; font-size: 14px;
+    background: transparent; border:none; cursor:pointer;
+    padding: 10px 14px 12px;
+    color: var(--ink-soft);
+    position:relative;
+    display:flex; align-items:center; gap:7px;
+  }
+  nav.tabs button .jptag{ font-family:'Zen Kaku Gothic New',sans-serif; font-size:12px; opacity:0.65; }
+  nav.tabs button.active{ color: var(--aizome); }
+  nav.tabs button.active::after{
+    content:""; position:absolute; left:8px; right:8px; bottom:-1px; height:3px;
+    background: var(--hanko); border-radius: 2px 2px 0 0;
+  }
+  nav.tabs button:hover{ color: var(--aizome); }
+
+  .card{
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  /* ---------- Vocab (Flashcards) ---------- */
+  .vocab-toolbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;}
+  .filter-group{ display:flex; gap:6px; }
+  .chip{
+    font-size:12.5px; font-weight:600; padding:6px 12px; border-radius:20px;
+    border:1px solid var(--line); background:var(--paper); color:var(--ink-soft); cursor:pointer;
+  }
+  .chip.active{ background: var(--aizome); color:#fff; border-color:var(--aizome); }
+  .counter{ font-size:13px; color:var(--ink-soft); }
+
+  .flash-stage{ perspective: 1400px; margin: 0 auto 18px; max-width:520px; }
+  .flash-card{
+    height: 260px; position:relative; cursor:pointer;
+    transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(.2,.8,.2,1);
+  }
+  .flash-card.flipped{ transform: rotateY(180deg); }
+  .face{
+    position:absolute; inset:0; backface-visibility:hidden;
+    border-radius: 12px; border:1px solid var(--line);
+    background: var(--paper);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding: 22px; text-align:center;
+    box-shadow: 0 4px 14px rgba(38,65,92,0.10);
+  }
+  .face.back{ transform: rotateY(180deg); background: #F5F0E6; }
+  .face .kanji{ font-family:'Shippori Mincho', serif; font-weight:800; font-size:44px; color:var(--ink); }
+  .face .kana{ font-family:'Zen Kaku Gothic New', sans-serif; color: var(--aizome-soft); font-size:15px; margin-top:6px; }
+  .face .meaning{ font-family:'Be Vietnam Pro',sans-serif; font-weight:700; font-size:21px; color:var(--hanko-dark); }
+  .face .example{ font-family:'Zen Kaku Gothic New', sans-serif; font-size:15px; margin-top:14px; color:var(--ink); }
+  .face .example-vn{ font-size:13px; color:var(--ink-soft); margin-top:6px; }
+  .face .hint{ position:absolute; bottom:10px; font-size:11px; color: var(--ink-soft); opacity:0.7; }
+  .known-badge{
+    position:absolute; top:10px; right:10px; width:34px; height:34px; border-radius:6px;
+    background: var(--hanko); color:#F6E9E4; font-family:'Shippori Mincho',serif; font-weight:800;
+    display:flex; align-items:center; justify-content:center; font-size:14px; transform:rotate(-8deg);
+    box-shadow:0 2px 4px rgba(0,0,0,0.25);
+  }
+
+  .flash-actions{ display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
+  button.btn{
+    font-family:'Be Vietnam Pro', sans-serif; font-weight:700; font-size:14px;
+    padding:10px 18px; border-radius: 8px; border:1px solid var(--ink); cursor:pointer;
+    background: var(--paper); color: var(--ink);
+  }
+  button.btn:hover{ background: #eee6d6; }
+  button.btn.primary{ background: var(--aizome); border-color: var(--aizome); color:#fff; }
+  button.btn.primary:hover{ background: var(--aizome-soft); }
+  button.btn.hanko-btn{ background: var(--hanko); border-color: var(--hanko); color:#fff; }
+  button.btn.hanko-btn:hover{ background: var(--hanko-dark); }
+  button.btn.ghost{ background:transparent; }
+  button.btn:disabled{ opacity:0.4; cursor:not-allowed; }
+
+  /* ---------- Grammar ---------- */
+  .g-item{ border-bottom:1px solid var(--line); }
+  .g-item:last-child{ border-bottom:none; }
+  .g-head{
+    display:flex; justify-content:space-between; align-items:center; gap:10px;
+    padding: 16px 18px; cursor:pointer;
+  }
+  .g-head .pattern{ font-family:'Zen Kaku Gothic New', sans-serif; font-weight:700; font-size:17px; color:var(--aizome); }
+  .g-head .meaning{ font-size:13px; color:var(--ink-soft); margin-top:3px; }
+  .g-body{ padding: 0 18px 18px; display:none; }
+  .g-item.open .g-body{ display:block; }
+  .g-item.open .g-head{ background:#F5F0E6; }
+  .g-body .expl{ font-size:14px; line-height:1.6; margin-bottom:10px; }
+  .g-body .ex-box{ background: var(--washi); border-left:3px solid var(--hanko); padding:10px 14px; border-radius:4px; }
+  .g-body .ex-box .jpline{ font-family:'Zen Kaku Gothic New',sans-serif; font-size:15px; }
+  .g-body .ex-box .vnline{ font-size:13px; color:var(--ink-soft); margin-top:4px; }
+  .g-mark{
+    flex:none; width:28px; height:28px; border-radius:6px; border:1.5px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-size:13px; color:transparent;
+    font-family:'Shippori Mincho',serif; font-weight:800;
+  }
+  .g-mark.done{ border-color: var(--hanko); background: var(--hanko); color:#F6E9E4; transform:rotate(-6deg); }
+
+  /* ---------- Listening ---------- */
+  .l-item{ padding:18px; border-bottom:1px solid var(--line); }
+  .l-item:last-child{ border-bottom:none; }
+  .l-top{ display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
+  .play-btn{
+    width:38px; height:38px; border-radius:50%; border:1.5px solid var(--aizome); background:#fff;
+    color:var(--aizome); cursor:pointer; font-size:15px; display:flex; align-items:center; justify-content:center;
+    flex:none;
+  }
+  .play-btn:hover{ background: var(--aizome); color:#fff; }
+  .l-status{ font-size:12px; color: var(--ink-soft); }
+  .l-status.done{ color: var(--ok); font-weight:700; }
+  .l-q{ font-size:14.5px; font-weight:600; margin-bottom:10px; }
+  .opt-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  @media (max-width:520px){ .opt-grid{ grid-template-columns:1fr; } }
+  .opt{
+    text-align:left; padding:10px 12px; border-radius:7px; border:1px solid var(--line);
+    background:#fff; cursor:pointer; font-family:'Zen Kaku Gothic New',sans-serif; font-size:14px;
+  }
+  .opt:hover{ border-color: var(--aizome); }
+  .opt.correct{ background:#E8F3EB; border-color: var(--ok); color:#245234; font-weight:700;}
+  .opt.wrong{ background:#F7E9E7; border-color: var(--hanko); color: var(--hanko-dark); }
+  .opt[disabled]{ cursor:default; }
+
+  /* ---------- Quiz ---------- */
+  .quiz-shell{ padding:20px; }
+  .quiz-progress-bar{ height:6px; border-radius:3px; background:var(--line); overflow:hidden; margin-bottom:18px;}
+  .quiz-progress-bar > div{ height:100%; background: var(--hanko); transition: width .3s; }
+  .quiz-q{ font-family:'Zen Kaku Gothic New',sans-serif; font-size:17px; font-weight:600; margin-bottom:16px; line-height:1.5; }
+  .quiz-meta{ font-size:12.5px; color:var(--ink-soft); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px; }
+  .quiz-result{ text-align:center; padding: 20px 10px; }
+  .quiz-result .score{ font-family:'Shippori Mincho',serif; font-weight:800; font-size:52px; color:var(--hanko); }
+  .quiz-result .score-label{ color:var(--ink-soft); font-size:14px; margin-bottom:18px; }
+  .review-item{ text-align:left; padding:10px 0; border-bottom:1px solid var(--line); font-size:13.5px; }
+  .review-item .qtext{ font-weight:600; margin-bottom:4px; font-family:'Zen Kaku Gothic New',sans-serif; }
+  .review-item .a-right{ color: var(--ok); }
+  .review-item .a-wrong{ color: var(--hanko); text-decoration: line-through; margin-right:8px;}
+
+  /* ---------- Progress ---------- */
+  .stat-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:12px; margin-bottom: 20px;}
+  @media (max-width:560px){ .stat-grid{ grid-template-columns: 1fr 1fr; } }
+  .stat-card{ padding:16px; text-align:center; }
+  .stat-card .num{ font-family:'Shippori Mincho',serif; font-weight:800; font-size:30px; color:var(--aizome); }
+  .stat-card .lbl{ font-size:12px; color:var(--ink-soft); margin-top:4px; }
+  .rank-box{ padding:20px; display:flex; align-items:center; gap:18px; margin-bottom:20px; }
+  .rank-seals{ display:flex; gap:4px; flex:none; }
+  .rank-seals .s{ width:22px; height:22px; border-radius:5px; background:var(--line); }
+  .rank-seals .s.filled{ background:var(--hanko); }
+  .rank-title{ font-family:'Shippori Mincho',serif; font-weight:800; font-size:20px; color:var(--ink); }
+  .rank-sub{ font-size:13px; color:var(--ink-soft); margin-top:2px; }
+  .history-list{ padding:6px 18px 18px; }
+  .history-row{ display:flex; justify-content:space-between; padding:9px 0; border-bottom:1px solid var(--line); font-size:13.5px; }
+  .history-row:last-child{ border-bottom:none; }
+  .empty-note{ padding:24px 18px; text-align:center; color:var(--ink-soft); font-size:13.5px; }
+  .reset-row{ margin-top: 18px; text-align:right; }
+  .reset-row button{ font-size:12px; color:var(--ink-soft); background:none; border:none; text-decoration:underline; cursor:pointer; }
+
+  .section-title{ font-family:'Shippori Mincho',serif; font-weight:700; font-size:19px; padding: 16px 18px 4px; }
+  .section-sub{ font-size:13px; color:var(--ink-soft); padding: 0 18px 14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="seal">識</div>
+    <div>
+      <h1>BJTノート (Tquoc hihi)</h1>
+      <p>Luyện thi Tiếng Nhật Thương mại (BJT) — Từ vựng · Ngữ pháp · Nghe hiểu · Luyện đề</p>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs"></nav>
+  <div id="content"></div>
+</div>
+
+<script>
+/* ================= DATA ================= */
+const VOCAB = [
+  {id:"v1", kanji:"取引先", kana:"とりひきさき", meaning:"Đối tác kinh doanh", ex:"取引先と会議をします。", exvn:"Tôi họp với đối tác kinh doanh."},
+  {id:"v2", kanji:"見積もり", kana:"みつもり", meaning:"Bản báo giá", ex:"見積もりを送ってください。", exvn:"Xin hãy gửi bản báo giá."},
+  {id:"v3", kanji:"納期", kana:"のうき", meaning:"Hạn giao hàng", ex:"納期を守ることが大切です。", exvn:"Tuân thủ hạn giao hàng rất quan trọng."},
+  {id:"v4", kanji:"予算", kana:"よさん", meaning:"Ngân sách", ex:"予算内で計画を立てます。", exvn:"Lập kế hoạch trong phạm vi ngân sách."},
+  {id:"v5", kanji:"契約書", kana:"けいやくしょ", meaning:"Hợp đồng (văn bản)", ex:"契約書にサインしてください。", exvn:"Xin hãy ký vào hợp đồng."},
+  {id:"v6", kanji:"会議室", kana:"かいぎしつ", meaning:"Phòng họp", ex:"会議室を予約しました。", exvn:"Tôi đã đặt phòng họp."},
+  {id:"v7", kanji:"出張", kana:"しゅっちょう", meaning:"Đi công tác", ex:"来週大阪へ出張します。", exvn:"Tuần sau tôi đi công tác Osaka."},
+  {id:"v8", kanji:"部署", kana:"ぶしょ", meaning:"Bộ phận, phòng ban", ex:"私の部署は営業部です。", exvn:"Bộ phận của tôi là phòng kinh doanh."},
+  {id:"v9", kanji:"上司", kana:"じょうし", meaning:"Cấp trên", ex:"上司に報告します。", exvn:"Tôi báo cáo với cấp trên."},
+  {id:"v10", kanji:"部下", kana:"ぶか", meaning:"Cấp dưới", ex:"部下を指導します。", exvn:"Tôi hướng dẫn cấp dưới."},
+  {id:"v11", kanji:"取締役", kana:"とりしまりやく", meaning:"Giám đốc điều hành", ex:"彼は取締役です。", exvn:"Anh ấy là giám đốc điều hành."},
+  {id:"v12", kanji:"株主", kana:"かぶぬし", meaning:"Cổ đông", ex:"株主総会が開かれます。", exvn:"Đại hội cổ đông sẽ được tổ chức."},
+  {id:"v13", kanji:"売上", kana:"うりあげ", meaning:"Doanh thu", ex:"今月の売上が増えました。", exvn:"Doanh thu tháng này đã tăng."},
+  {id:"v14", kanji:"利益", kana:"りえき", meaning:"Lợi nhuận", ex:"利益を出します。", exvn:"Tạo ra lợi nhuận."},
+  {id:"v15", kanji:"損失", kana:"そんしつ", meaning:"Tổn thất", ex:"損失を減らします。", exvn:"Giảm thiểu tổn thất."},
+  {id:"v16", kanji:"経費", kana:"けいひ", meaning:"Chi phí", ex:"経費を精算します。", exvn:"Quyết toán chi phí."},
+  {id:"v17", kanji:"請求書", kana:"せいきゅうしょ", meaning:"Hóa đơn", ex:"請求書を発行します。", exvn:"Phát hành hóa đơn."},
+  {id:"v18", kanji:"領収書", kana:"りょうしゅうしょ", meaning:"Biên lai", ex:"領収書をもらいます。", exvn:"Nhận biên lai."},
+  {id:"v19", kanji:"在庫", kana:"ざいこ", meaning:"Hàng tồn kho", ex:"在庫を確認します。", exvn:"Kiểm tra hàng tồn kho."},
+  {id:"v20", kanji:"発注", kana:"はっちゅう", meaning:"Đặt hàng", ex:"商品を発注します。", exvn:"Đặt hàng sản phẩm."},
+  {id:"v21", kanji:"納品", kana:"のうひん", meaning:"Giao hàng", ex:"明日納品します。", exvn:"Ngày mai giao hàng."},
+  {id:"v22", kanji:"打ち合わせ", kana:"うちあわせ", meaning:"Buổi trao đổi công việc", ex:"打ち合わせを設定します。", exvn:"Sắp xếp buổi trao đổi."},
+  {id:"v23", kanji:"交渉", kana:"こうしょう", meaning:"Đàm phán", ex:"価格交渉をします。", exvn:"Đàm phán về giá."},
+  {id:"v24", kanji:"提案", kana:"ていあん", meaning:"Đề xuất", ex:"新しい提案をします。", exvn:"Đưa ra đề xuất mới."},
+];
+
+const GRAMMAR = [
+  {id:"g1", pattern:"～ていただけますか", meaning:"Nhờ ai đó làm gì một cách lịch sự", expl:"Dùng khi nhờ vả đối phương (khách hàng, cấp trên) làm gì đó một cách rất lịch sự, trang trọng hơn ～てください。", jp:"お待ちいただけますか。", vn:"Anh/chị có thể đợi một chút được không ạ?"},
+  {id:"g2", pattern:"～させていただきます", meaning:"Khiêm nhường khi bản thân thực hiện hành động", expl:"Thể khiêm nhường ngữ, dùng khi người nói xin phép được làm gì đó, thường thấy trong email và họp hành công việc.", jp:"発表させていただきます。", vn:"Tôi xin phép được trình bày."},
+  {id:"g3", pattern:"お/ご＋ Verb/Noun ＋する", meaning:"Khiêm nhường ngữ (kenjougo)", expl:"Hạ thấp hành động của bản thân để thể hiện sự tôn trọng đối phương. Thường dùng với động từ liên quan đến việc phục vụ khách.", jp:"ご案内します。", vn:"Tôi xin hướng dẫn quý khách."},
+  {id:"g4", pattern:"お/ご＋ Verb/Noun ＋になる", meaning:"Tôn kính ngữ (sonkeigo)", expl:"Nâng cao hành động của đối phương (khách hàng, cấp trên) để thể hiện sự kính trọng.", jp:"お客様がお帰りになります。", vn:"Quý khách sẽ ra về."},
+  {id:"g5", pattern:"～ようにする", meaning:"Cố gắng, chú ý để làm gì đó", expl:"Diễn tả ý chí, sự nỗ lực chủ động của người nói để đạt được một thói quen hay kết quả nào đó.", jp:"遅れないようにします。", vn:"Tôi sẽ cố gắng không đến muộn."},
+  {id:"g6", pattern:"～ことになっている", meaning:"Theo quy định/thông lệ là...", expl:"Diễn tả một quy định, nội quy hoặc thông lệ đã được ấn định từ trước, không phải ý muốn cá nhân.", jp:"会議は9時に始まることになっています。", vn:"Theo quy định, cuộc họp bắt đầu lúc 9 giờ."},
+  {id:"g7", pattern:"～に応じて", meaning:"Tùy theo, phù hợp với", expl:"Diễn tả sự thay đổi/điều chỉnh tương ứng theo một điều kiện, tình huống nào đó.", jp:"需要に応じて生産量を調整します。", vn:"Điều chỉnh sản lượng tùy theo nhu cầu."},
+  {id:"g8", pattern:"～上で", meaning:"Sau khi, trên cơ sở đã...", expl:"Diễn tả hành động vế sau được thực hiện sau khi đã hoàn tất và dựa trên cơ sở của hành động vế trước, thường dùng trong văn bản trang trọng.", jp:"確認した上でご連絡します。", vn:"Sau khi xác nhận, tôi sẽ liên lạc lại."},
+  {id:"g9", pattern:"～際に", meaning:"Vào lúc, khi (trang trọng)", expl:"Cách nói trang trọng hơn của ～とき, thường dùng trong hướng dẫn sử dụng, thông báo công việc.", jp:"ご利用の際にご注意ください。", vn:"Xin lưu ý khi sử dụng."},
+  {id:"g10", pattern:"～に伴い", meaning:"Đi kèm với, do sự thay đổi của...", expl:"Diễn tả một sự việc xảy ra kèm theo hoặc là kết quả của một sự thay đổi khác, thường dùng trong thông báo chính thức.", jp:"価格改定に伴い、通知いたします。", vn:"Do việc điều chỉnh giá, chúng tôi xin thông báo."},
+];
+
+const LISTENING = [
+  {id:"l1", audio:"会議は午後3時から始まります。", q:"会議は何時から始まりますか。", opts:["午前3時","午後3時","午後5時","午前9時"], a:1},
+  {id:"l2", audio:"来週の月曜日に大阪へ出張します。", q:"いつ出張しますか。", opts:["今週の月曜日","来週の月曜日","来週の金曜日","今週の金曜日"], a:1},
+  {id:"l3", audio:"見積もりは金曜日までに送ります。", q:"見積もりはいつまでに送りますか。", opts:["月曜日","水曜日","金曜日","日曜日"], a:2},
+  {id:"l4", audio:"会議室は3階にあります。", q:"会議室は何階にありますか。", opts:["1階","2階","3階","4階"], a:2},
+  {id:"l5", audio:"納期は来月の10日です。", q:"納期はいつですか。", opts:["今月の10日","来月の10日","来月の20日","今月の20日"], a:1},
+  {id:"l6", audio:"打ち合わせは午前10時からです。持ち物は資料とパソコンです。", q:"打ち合わせに何を持っていきますか。", opts:["資料とパソコン","パソコンだけ","資料だけ","何も要りません"], a:0},
+];
+
+const QUIZBANK = [
+  {id:"q1", q:"「取引先」の意味は？", opts:["Đối tác kinh doanh","Nhân viên mới","Khách du lịch","Người quản lý"], a:0},
+  {id:"q2", q:"「見積もり」の意味は？", opts:["Hợp đồng","Bản báo giá","Hóa đơn","Biên lai"], a:1},
+  {id:"q3", q:"「納期」の意味は？", opts:["Ngân sách","Doanh thu","Hạn giao hàng","Lợi nhuận"], a:2},
+  {id:"q4", q:"「出張」の意味は？", opts:["Nghỉ phép","Đi công tác","Tăng ca","Họp hành"], a:1},
+  {id:"q5", q:"会議は9時に始まる（　）。", opts:["ことになっています","させていただきます","に応じてです","に伴います"], a:0},
+  {id:"q6", q:"お客様がお帰りに（　）。", opts:["します","なります","いただきます","伴います"], a:1},
+  {id:"q7", q:"明日、発表（　）いただきます。", opts:["させて","されて","させ","して"], a:0},
+  {id:"q8", q:"「損失」の反対の意味に近いのは？", opts:["利益","経費","在庫","発注"], a:0},
+  {id:"q9", q:"「株主」の意味は？", opts:["Cổ đông","Giám đốc","Nhân viên bán hàng","Kế toán"], a:0},
+  {id:"q10", q:"需要（　）生産量を調整します。", opts:["に応じて","に伴い","の際に","の上で"], a:0},
+  {id:"q11", q:"確認した（　）ご連絡します。", opts:["上で","際に","ように","ことになって"], a:0},
+  {id:"q12", q:"「請求書」の意味は？", opts:["Hóa đơn","Biên lai","Hợp đồng","Báo giá"], a:0},
+  {id:"q13", q:"「打ち合わせ」の意味は？", opts:["Đàm phán","Buổi trao đổi công việc","Đề xuất","Đặt hàng"], a:1},
+  {id:"q14", q:"価格改定（　）、通知いたします。", opts:["に伴い","に応じて","ようにします","ことになっています"], a:0},
+  {id:"q15", q:"「部下」の意味は？", opts:["Cấp trên","Cấp dưới","Đồng nghiệp","Khách hàng"], a:1},
+  {id:"q16", q:"ご利用の（　）ご注意ください。", opts:["際に","上で","ように","に応じて"], a:0},
+];
+
+/* ================= STATE ================= */
+let progress = { knownWords: [], grammarDone: [], listeningDone: [], quizHistory: [] };
+let storageReady = false;
+
+let activeTab = "vocab";
+
+// vocab state
+let vocabFilter = "all";
+let vocabOrder = VOCAB.map((_,i)=>i);
+let vocabPos = 0;
+let vocabFlipped = false;
+
+// listening state
+let listeningAnswered = {}; // id -> chosenIndex
+
+// quiz state
+let quizSet = [];
+let quizPos = 0;
+let quizAnswers = [];
+let quizFinished = false;
+let quizAnsweredCurrent = false;
+
+/* ================= STORAGE ================= */
+async function loadProgress(){
+  try{
+    const res = await window.storage.get('bjt-progress', false);
+    if(res && res.value){
+      const parsed = JSON.parse(res.value);
+      progress = Object.assign({knownWords:[],grammarDone:[],listeningDone:[],quizHistory:[]}, parsed);
+    }
+  }catch(e){ /* no data yet, keep defaults */ }
+  storageReady = true;
+}
+async function saveProgress(){
+  try{ await window.storage.set('bjt-progress', JSON.stringify(progress), false); }
+  catch(e){ console.error('Storage error', e); }
+}
+async function resetProgress(){
+  progress = { knownWords: [], grammarDone: [], listeningDone: [], quizHistory: [] };
+  await saveProgress();
+  render();
+}
+
+/* ================= TABS ================= */
+const TABS = [
+  {id:"vocab", label:"Từ vựng", jp:"単語"},
+  {id:"grammar", label:"Ngữ pháp", jp:"文法"},
+  {id:"listening", label:"Nghe hiểu", jp:"聴解"},
+  {id:"quiz", label:"Luyện đề", jp:"テスト"},
+  {id:"progress", label:"Tiến độ", jp:"進捗"},
+];
+
+function renderTabs(){
+  const nav = document.getElementById('tabs');
+  nav.innerHTML = TABS.map(t => `
+    <button class="${activeTab===t.id?'active':''}" onclick="switchTab('${t.id}')">
+      ${t.label} <span class="jptag jp">${t.jp}</span>
+    </button>
+  `).join('');
+}
+function switchTab(id){
+  activeTab = id;
+  if(id==="quiz" && quizSet.length===0){ startQuiz(); }
+  render();
+}
+
+/* ================= VOCAB (FLASHCARDS) ================= */
+function filteredVocabIndices(){
+  return VOCAB.map((_,i)=>i).filter(i=>{
+    const known = progress.knownWords.includes(VOCAB[i].id);
+    if(vocabFilter==="known") return known;
+    if(vocabFilter==="unknown") return !known;
+    return true;
+  });
+}
+function setVocabFilter(f){
+  vocabFilter = f;
+  vocabOrder = filteredVocabIndices();
+  vocabPos = 0; vocabFlipped = false;
+  render();
+}
+function shuffleVocab(){
+  for(let i=vocabOrder.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [vocabOrder[i],vocabOrder[j]]=[vocabOrder[j],vocabOrder[i]];
+  }
+  vocabPos = 0; vocabFlipped = false;
+  render();
+}
+function flipCard(){ vocabFlipped = !vocabFlipped; render(); }
+function nextCard(){
+  if(vocabOrder.length===0) return;
+  vocabPos = (vocabPos+1) % vocabOrder.length;
+  vocabFlipped = false;
+  render();
+}
+function prevCard(){
+  if(vocabOrder.length===0) return;
+  vocabPos = (vocabPos-1+vocabOrder.length) % vocabOrder.length;
+  vocabFlipped = false;
+  render();
+}
+function toggleKnown(id){
+  const idx = progress.knownWords.indexOf(id);
+  if(idx>=0) progress.knownWords.splice(idx,1);
+  else progress.knownWords.push(id);
+  saveProgress();
+  vocabOrder = filteredVocabIndices();
+  if(vocabPos >= vocabOrder.length) vocabPos = Math.max(0, vocabOrder.length-1);
+  render();
+}
+function speakJa(text, rate){
+  if(!('speechSynthesis' in window)){ alert('Trình duyệt không hỗ trợ đọc tiếng Nhật.'); return; }
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ja-JP';
+  u.rate = rate || 0.95;
+  const voices = window.speechSynthesis.getVoices();
+  const jaVoice = voices.find(v=>v.lang && v.lang.startsWith('ja'));
+  if(jaVoice) u.voice = jaVoice;
+  window.speechSynthesis.speak(u);
+}
+
+function renderVocab(){
+  vocabOrder = vocabOrder.length ? vocabOrder : filteredVocabIndices();
+  if(vocabOrder.length===0) vocabOrder = filteredVocabIndices();
+  const total = VOCAB.length;
+  const knownCount = progress.knownWords.length;
+
+  if(vocabOrder.length===0){
+    return `
+    <div class="card">
+      <div class="section-title">Từ vựng & Kanji <span class="jp">単語</span></div>
+      <div class="empty-note">Không có thẻ nào trong bộ lọc này. Hãy đổi bộ lọc để xem thêm từ.</div>
+    </div>`;
+  }
+
+  const i = vocabOrder[vocabPos];
+  const w = VOCAB[i];
+  const known = progress.knownWords.includes(w.id);
+
+  return `
+  <div class="card">
+    <div class="section-title">Từ vựng & Kanji <span class="jp">単語</span></div>
+    <div class="section-sub">Đã thuộc ${knownCount}/${total} từ · Nhấn vào thẻ để xem nghĩa</div>
+    <div style="padding: 0 18px 18px;">
+      <div class="vocab-toolbar">
+        <div class="filter-group">
+          <button class="chip ${vocabFilter==='all'?'active':''}" onclick="setVocabFilter('all')">Tất cả</button>
+          <button class="chip ${vocabFilter==='unknown'?'active':''}" onclick="setVocabFilter('unknown')">Chưa thuộc</button>
+          <button class="chip ${vocabFilter==='known'?'active':''}" onclick="setVocabFilter('known')">Đã thuộc</button>
+        </div>
+        <div class="counter">${vocabPos+1} / ${vocabOrder.length}</div>
+      </div>
+
+      <div class="flash-stage">
+        <div class="flash-card ${vocabFlipped?'flipped':''}" onclick="flipCard()">
+          <div class="face front">
+            ${known ? '<div class="known-badge">済</div>' : ''}
+            <div class="kanji jp">${w.kanji}</div>
+            <div class="kana jp">${w.kana}</div>
+            <div class="hint">Nhấn để xem nghĩa</div>
+          </div>
+          <div class="face back">
+            ${known ? '<div class="known-badge">済</div>' : ''}
+            <div class="meaning">${w.meaning}</div>
+            <div class="example jp">${w.ex}</div>
+            <div class="example-vn">${w.exvn}</div>
+            <div class="hint">Nhấn để lật lại</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flash-actions">
+        <button class="btn ghost" onclick="event.stopPropagation(); prevCard()">← Trước</button>
+        <button class="btn ${known?'btn':'hanko-btn'}" onclick="event.stopPropagation(); toggleKnown('${w.id}')">
+          ${known ? 'Bỏ đánh dấu' : 'Đã thuộc 印'}
+        </button>
+        <button class="btn ghost" onclick="event.stopPropagation(); speakJa('${w.kanji}')">🔊 Nghe</button>
+        <button class="btn ghost" onclick="event.stopPropagation(); nextCard()">Tiếp →</button>
+      </div>
+      <div style="text-align:center; margin-top:12px;">
+        <button class="btn" onclick="shuffleVocab()">🔀 Xáo trộn</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ================= GRAMMAR ================= */
+let openGrammarId = null;
+function toggleGrammar(id){
+  openGrammarId = openGrammarId===id ? null : id;
+  render();
+}
+function toggleGrammarDone(id){
+  const idx = progress.grammarDone.indexOf(id);
+  if(idx>=0) progress.grammarDone.splice(idx,1);
+  else progress.grammarDone.push(id);
+  saveProgress();
+  render();
+}
+function renderGrammar(){
+  return `
+  <div class="card">
+    <div class="section-title">Ngữ pháp thương mại <span class="jp">文法</span></div>
+    <div class="section-sub">Đã ôn ${progress.grammarDone.length}/${GRAMMAR.length} mẫu câu · Nhấn để mở rộng giải thích</div>
+    ${GRAMMAR.map(g=>{
+      const open = openGrammarId===g.id;
+      const done = progress.grammarDone.includes(g.id);
+      return `
+      <div class="g-item ${open?'open':''}">
+        <div class="g-head" onclick="toggleGrammar('${g.id}')">
+          <div>
+            <div class="pattern jp">${g.pattern}</div>
+            <div class="meaning">${g.meaning}</div>
+          </div>
+          <div class="g-mark ${done?'done':''}" onclick="event.stopPropagation(); toggleGrammarDone('${g.id}')">印</div>
+        </div>
+        <div class="g-body">
+          <div class="expl">${g.expl}</div>
+          <div class="ex-box">
+            <div class="jpline jp">${g.jp}</div>
+            <div class="vnline">${g.vn}</div>
+          </div>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+/* ================= LISTENING ================= */
+function answerListening(id, idx){
+  if(listeningAnswered[id] !== undefined) return;
+  listeningAnswered[id] = idx;
+  const item = LISTENING.find(l=>l.id===id);
+  if(idx===item.a && !progress.listeningDone.includes(id)){
+    progress.listeningDone.push(id);
+    saveProgress();
+  }
+  render();
+}
+function renderListening(){
+  return `
+  <div class="card">
+    <div class="section-title">Nghe hiểu <span class="jp">聴解</span></div>
+    <div class="section-sub">Đã hoàn thành ${progress.listeningDone.length}/${LISTENING.length} bài · Nhấn 🔊 để nghe câu tiếng Nhật</div>
+    ${LISTENING.map(l=>{
+      const answered = listeningAnswered[l.id];
+      return `
+      <div class="l-item">
+        <div class="l-top">
+          <button class="play-btn" onclick="speakJa('${l.audio.replace(/'/g,"\\'")}')">🔊</button>
+          <span class="l-status ${answered!==undefined && answered===l.a ? 'done':''}">
+            ${answered===undefined ? 'Chưa trả lời' : (answered===l.a ? 'Chính xác 正解' : 'Chưa đúng, thử nghe lại')}
+          </span>
+        </div>
+        <div class="l-q jp">${l.q}</div>
+        <div class="opt-grid">
+          ${l.opts.map((o,idx)=>{
+            let cls = 'opt';
+            if(answered!==undefined){
+              if(idx===l.a) cls += ' correct';
+              else if(idx===answered) cls += ' wrong';
+            }
+            return `<button class="${cls} jp" ${answered!==undefined?'disabled':''} onclick="answerListening('${l.id}', ${idx})">${o}</button>`;
+          }).join('')}
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+/* ================= QUIZ ================= */
+function startQuiz(){
+  const pool = [...QUIZBANK];
+  for(let i=pool.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [pool[i],pool[j]]=[pool[j],pool[i]];
+  }
+  quizSet = pool.slice(0, 10);
+  quizPos = 0;
+  quizAnswers = [];
+  quizFinished = false;
+  quizAnsweredCurrent = false;
+}
+function answerQuiz(idx){
+  if(quizAnsweredCurrent) return;
+  quizAnsweredCurrent = true;
+  const q = quizSet[quizPos];
+  quizAnswers.push({q: q.q, chosen: idx, correct: q.a, opts: q.opts});
+  render();
+}
+function nextQuiz(){
+  if(quizPos < quizSet.length-1){
+    quizPos++;
+    quizAnsweredCurrent = false;
+    render();
+  } else {
+    finishQuiz();
+  }
+}
+async function finishQuiz(){
+  quizFinished = true;
+  const score = quizAnswers.filter(a=>a.chosen===a.correct).length;
+  progress.quizHistory.unshift({date: new Date().toLocaleDateString('vi-VN'), score, total: quizSet.length});
+  progress.quizHistory = progress.quizHistory.slice(0,10);
+  await saveProgress();
+  render();
+}
+function restartQuiz(){
+  startQuiz();
+  render();
+}
+function renderQuiz(){
+  if(quizSet.length===0) startQuiz();
+
+  if(quizFinished){
+    const score = quizAnswers.filter(a=>a.chosen===a.correct).length;
+    return `
+    <div class="card quiz-shell">
+      <div class="quiz-result">
+        <div class="score">${score}/${quizSet.length}</div>
+        <div class="score-label">Kết quả bài luyện đề</div>
+        <button class="btn primary" onclick="restartQuiz()">Làm lại đề mới</button>
+      </div>
+      <div style="margin-top:10px;">
+        ${quizAnswers.map(a=>`
+          <div class="review-item">
+            <div class="qtext jp">${a.q}</div>
+            <div>
+              ${a.chosen!==a.correct ? `<span class="a-wrong jp">${a.opts[a.chosen]}</span>` : ''}
+              <span class="a-right jp">${a.opts[a.correct]}</span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+  }
+
+  const q = quizSet[quizPos];
+  const answered = quizAnsweredCurrent;
+  const lastAns = answered ? quizAnswers[quizAnswers.length-1] : null;
+
+  return `
+  <div class="card quiz-shell">
+    <div class="quiz-meta">Câu ${quizPos+1} / ${quizSet.length}</div>
+    <div class="quiz-progress-bar"><div style="width:${((quizPos)/quizSet.length)*100}%;"></div></div>
+    <div class="quiz-q jp">${q.q}</div>
+    <div class="opt-grid" style="grid-template-columns:1fr;">
+      ${q.opts.map((o,idx)=>{
+        let cls = 'opt';
+        if(answered){
+          if(idx===q.a) cls += ' correct';
+          else if(lastAns && idx===lastAns.chosen) cls += ' wrong';
+        }
+        return `<button class="${cls} jp" ${answered?'disabled':''} onclick="answerQuiz(${idx})">${o}</button>`;
+      }).join('')}
+    </div>
+    ${answered ? `<div style="margin-top:16px; text-align:right;"><button class="btn primary" onclick="nextQuiz()">${quizPos<quizSet.length-1?'Câu tiếp →':'Xem kết quả'}</button></div>` : ''}
+  </div>`;
+}
+
+/* ================= PROGRESS ================= */
+function renderProgress(){
+  const vocabDone = progress.knownWords.length;
+  const grammarDone = progress.grammarDone.length;
+  const listeningDone = progress.listeningDone.length;
+  const totalItems = VOCAB.length + GRAMMAR.length + LISTENING.length;
+  const doneItems = vocabDone + grammarDone + listeningDone;
+  const pct = totalItems ? doneItems/totalItems : 0;
+
+  let rankTitle = "見習い", rankSub = "Mới bắt đầu", filled = 1;
+  if(pct >= 0.75){ rankTitle="達人"; rankSub="Bậc thầy thương mại"; filled=5; }
+  else if(pct >= 0.5){ rankTitle="一人前"; rankSub="Đã thành thạo cơ bản"; filled=4; }
+  else if(pct >= 0.25){ rankTitle="中級者"; rankSub="Đang tiến bộ"; filled=3; }
+  else if(pct > 0){ rankTitle="初心者"; rankSub="Bước đầu làm quen"; filled=2; }
+
+  const lastScorePct = progress.quizHistory.length ? Math.round((progress.quizHistory[0].score/progress.quizHistory[0].total)*100) : null;
+
+  return `
+  <div>
+    <div class="rank-box card">
+      <div class="rank-seals">
+        ${[0,1,2,3,4].map(i=>`<div class="s ${i<filled?'filled':''}"></div>`).join('')}
+      </div>
+      <div>
+        <div class="rank-title jp">${rankTitle}</div>
+        <div class="rank-sub">${rankSub} · Hoàn thành ${Math.round(pct*100)}% nội dung</div>
+      </div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="card stat-card"><div class="num">${vocabDone}/${VOCAB.length}</div><div class="lbl">Từ vựng đã thuộc</div></div>
+      <div class="card stat-card"><div class="num">${grammarDone}/${GRAMMAR.length}</div><div class="lbl">Ngữ pháp đã ôn</div></div>
+      <div class="card stat-card"><div class="num">${listeningDone}/${LISTENING.length}</div><div class="lbl">Bài nghe hoàn thành</div></div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Lịch sử luyện đề <span class="jp">テスト履歴</span></div>
+      ${lastScorePct!==null ? `<div class="section-sub">Điểm gần nhất: ${lastScorePct}%</div>` : ''}
+      ${progress.quizHistory.length===0 ? `<div class="empty-note">Chưa có kết quả nào. Hãy làm thử một đề ở tab "Luyện đề".</div>` : `
+      <div class="history-list">
+        ${progress.quizHistory.map(h=>`
+          <div class="history-row">
+            <span>${h.date}</span>
+            <span>${h.score}/${h.total} câu đúng</span>
+          </div>
+        `).join('')}
+      </div>`}
+    </div>
+    <div class="reset-row">
+      <button onclick="if(confirm('Xóa toàn bộ tiến độ đã lưu?')) resetProgress()">Đặt lại toàn bộ tiến độ</button>
+    </div>
+  </div>`;
+}
+
+/* ================= MAIN RENDER ================= */
+function render(){
+  renderTabs();
+  const el = document.getElementById('content');
+  if(!storageReady){
+    el.innerHTML = `<div class="card empty-note">Đang tải dữ liệu...</div>`;
+    return;
+  }
+  if(activeTab==="vocab") el.innerHTML = renderVocab();
+  else if(activeTab==="grammar") el.innerHTML = renderGrammar();
+  else if(activeTab==="listening") el.innerHTML = renderListening();
+  else if(activeTab==="quiz") el.innerHTML = renderQuiz();
+  else if(activeTab==="progress") el.innerHTML = renderProgress();
+}
+
+/* ================= INIT ================= */
+(async function init(){
+  vocabOrder = filteredVocabIndices();
+  if('speechSynthesis' in window){
+    window.speechSynthesis.onvoiceschanged = () => {};
+  }
+  await loadProgress();
+  render();
+})();
+</script>
+</body>
+</html>
