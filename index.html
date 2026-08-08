@@ -246,76 +246,20 @@
   <nav class="tabs" id="tabs"></nav>
   <div id="content"></div>
 </div>
-
+<script src="data/GRAMMAR.js"></script>
+<script src="data/VOCABULARY.js"></script>
+<script src="data/LISTENING.js"></script>
+<script src="data/QUIZBANK.js"></script>
 <script>
 /* ================= DATA ================= */
-const VOCAB = [
-  {id:"v1", kanji:"取引先", kana:"とりひきさき", meaning:"Đối tác kinh doanh", ex:"取引先と会議をします。", exvn:"Tôi họp với đối tác kinh doanh."},
-  {id:"v2", kanji:"見積もり", kana:"みつもり", meaning:"Bản báo giá", ex:"見積もりを送ってください。", exvn:"Xin hãy gửi bản báo giá."},
-  {id:"v3", kanji:"納期", kana:"のうき", meaning:"Hạn giao hàng", ex:"納期を守ることが大切です。", exvn:"Tuân thủ hạn giao hàng rất quan trọng."},
-  {id:"v4", kanji:"予算", kana:"よさん", meaning:"Ngân sách", ex:"予算内で計画を立てます。", exvn:"Lập kế hoạch trong phạm vi ngân sách."},
-  {id:"v5", kanji:"契約書", kana:"けいやくしょ", meaning:"Hợp đồng (văn bản)", ex:"契約書にサインしてください。", exvn:"Xin hãy ký vào hợp đồng."},
-  {id:"v6", kanji:"会議室", kana:"かいぎしつ", meaning:"Phòng họp", ex:"会議室を予約しました。", exvn:"Tôi đã đặt phòng họp."},
-  {id:"v7", kanji:"出張", kana:"しゅっちょう", meaning:"Đi công tác", ex:"来週大阪へ出張します。", exvn:"Tuần sau tôi đi công tác Osaka."},
-  {id:"v8", kanji:"部署", kana:"ぶしょ", meaning:"Bộ phận, phòng ban", ex:"私の部署は営業部です。", exvn:"Bộ phận của tôi là phòng kinh doanh."},
-  {id:"v9", kanji:"上司", kana:"じょうし", meaning:"Cấp trên", ex:"上司に報告します。", exvn:"Tôi báo cáo với cấp trên."},
-  {id:"v10", kanji:"部下", kana:"ぶか", meaning:"Cấp dưới", ex:"部下を指導します。", exvn:"Tôi hướng dẫn cấp dưới."},
-  {id:"v11", kanji:"取締役", kana:"とりしまりやく", meaning:"Giám đốc điều hành", ex:"彼は取締役です。", exvn:"Anh ấy là giám đốc điều hành."},
-  {id:"v12", kanji:"株主", kana:"かぶぬし", meaning:"Cổ đông", ex:"株主総会が開かれます。", exvn:"Đại hội cổ đông sẽ được tổ chức."},
-  {id:"v13", kanji:"売上", kana:"うりあげ", meaning:"Doanh thu", ex:"今月の売上が増えました。", exvn:"Doanh thu tháng này đã tăng."},
-  {id:"v14", kanji:"利益", kana:"りえき", meaning:"Lợi nhuận", ex:"利益を出します。", exvn:"Tạo ra lợi nhuận."},
-  {id:"v15", kanji:"損失", kana:"そんしつ", meaning:"Tổn thất", ex:"損失を減らします。", exvn:"Giảm thiểu tổn thất."},
-  {id:"v16", kanji:"経費", kana:"けいひ", meaning:"Chi phí", ex:"経費を精算します。", exvn:"Quyết toán chi phí."},
-  {id:"v17", kanji:"請求書", kana:"せいきゅうしょ", meaning:"Hóa đơn", ex:"請求書を発行します。", exvn:"Phát hành hóa đơn."},
-  {id:"v18", kanji:"領収書", kana:"りょうしゅうしょ", meaning:"Biên lai", ex:"領収書をもらいます。", exvn:"Nhận biên lai."},
-  {id:"v19", kanji:"在庫", kana:"ざいこ", meaning:"Hàng tồn kho", ex:"在庫を確認します。", exvn:"Kiểm tra hàng tồn kho."},
-  {id:"v20", kanji:"発注", kana:"はっちゅう", meaning:"Đặt hàng", ex:"商品を発注します。", exvn:"Đặt hàng sản phẩm."},
-  {id:"v21", kanji:"納品", kana:"のうひん", meaning:"Giao hàng", ex:"明日納品します。", exvn:"Ngày mai giao hàng."},
-  {id:"v22", kanji:"打ち合わせ", kana:"うちあわせ", meaning:"Buổi trao đổi công việc", ex:"打ち合わせを設定します。", exvn:"Sắp xếp buổi trao đổi."},
-  {id:"v23", kanji:"交渉", kana:"こうしょう", meaning:"Đàm phán", ex:"価格交渉をします。", exvn:"Đàm phán về giá."},
-  {id:"v24", kanji:"提案", kana:"ていあん", meaning:"Đề xuất", ex:"新しい提案をします。", exvn:"Đưa ra đề xuất mới."},
-];
 
-const GRAMMAR = [
-  {id:"g1", pattern:"～ていただけますか", meaning:"Nhờ ai đó làm gì một cách lịch sự", expl:"Dùng khi nhờ vả đối phương (khách hàng, cấp trên) làm gì đó một cách rất lịch sự, trang trọng hơn ～てください。", jp:"お待ちいただけますか。", vn:"Anh/chị có thể đợi một chút được không ạ?"},
-  {id:"g2", pattern:"～させていただきます", meaning:"Khiêm nhường khi bản thân thực hiện hành động", expl:"Thể khiêm nhường ngữ, dùng khi người nói xin phép được làm gì đó, thường thấy trong email và họp hành công việc.", jp:"発表させていただきます。", vn:"Tôi xin phép được trình bày."},
-  {id:"g3", pattern:"お/ご＋ Verb/Noun ＋する", meaning:"Khiêm nhường ngữ (kenjougo)", expl:"Hạ thấp hành động của bản thân để thể hiện sự tôn trọng đối phương. Thường dùng với động từ liên quan đến việc phục vụ khách.", jp:"ご案内します。", vn:"Tôi xin hướng dẫn quý khách."},
-  {id:"g4", pattern:"お/ご＋ Verb/Noun ＋になる", meaning:"Tôn kính ngữ (sonkeigo)", expl:"Nâng cao hành động của đối phương (khách hàng, cấp trên) để thể hiện sự kính trọng.", jp:"お客様がお帰りになります。", vn:"Quý khách sẽ ra về."},
-  {id:"g5", pattern:"～ようにする", meaning:"Cố gắng, chú ý để làm gì đó", expl:"Diễn tả ý chí, sự nỗ lực chủ động của người nói để đạt được một thói quen hay kết quả nào đó.", jp:"遅れないようにします。", vn:"Tôi sẽ cố gắng không đến muộn."},
-  {id:"g6", pattern:"～ことになっている", meaning:"Theo quy định/thông lệ là...", expl:"Diễn tả một quy định, nội quy hoặc thông lệ đã được ấn định từ trước, không phải ý muốn cá nhân.", jp:"会議は9時に始まることになっています。", vn:"Theo quy định, cuộc họp bắt đầu lúc 9 giờ."},
-  {id:"g7", pattern:"～に応じて", meaning:"Tùy theo, phù hợp với", expl:"Diễn tả sự thay đổi/điều chỉnh tương ứng theo một điều kiện, tình huống nào đó.", jp:"需要に応じて生産量を調整します。", vn:"Điều chỉnh sản lượng tùy theo nhu cầu."},
-  {id:"g8", pattern:"～上で", meaning:"Sau khi, trên cơ sở đã...", expl:"Diễn tả hành động vế sau được thực hiện sau khi đã hoàn tất và dựa trên cơ sở của hành động vế trước, thường dùng trong văn bản trang trọng.", jp:"確認した上でご連絡します。", vn:"Sau khi xác nhận, tôi sẽ liên lạc lại."},
-  {id:"g9", pattern:"～際に", meaning:"Vào lúc, khi (trang trọng)", expl:"Cách nói trang trọng hơn của ～とき, thường dùng trong hướng dẫn sử dụng, thông báo công việc.", jp:"ご利用の際にご注意ください。", vn:"Xin lưu ý khi sử dụng."},
-  {id:"g10", pattern:"～に伴い", meaning:"Đi kèm với, do sự thay đổi của...", expl:"Diễn tả một sự việc xảy ra kèm theo hoặc là kết quả của một sự thay đổi khác, thường dùng trong thông báo chính thức.", jp:"価格改定に伴い、通知いたします。", vn:"Do việc điều chỉnh giá, chúng tôi xin thông báo."},
-];
 
-const LISTENING = [
-  {id:"l1", audio:"会議は午後3時から始まります。", q:"会議は何時から始まりますか。", opts:["午前3時","午後3時","午後5時","午前9時"], a:1},
-  {id:"l2", audio:"来週の月曜日に大阪へ出張します。", q:"いつ出張しますか。", opts:["今週の月曜日","来週の月曜日","来週の金曜日","今週の金曜日"], a:1},
-  {id:"l3", audio:"見積もりは金曜日までに送ります。", q:"見積もりはいつまでに送りますか。", opts:["月曜日","水曜日","金曜日","日曜日"], a:2},
-  {id:"l4", audio:"会議室は3階にあります。", q:"会議室は何階にありますか。", opts:["1階","2階","3階","4階"], a:2},
-  {id:"l5", audio:"納期は来月の10日です。", q:"納期はいつですか。", opts:["今月の10日","来月の10日","来月の20日","今月の20日"], a:1},
-  {id:"l6", audio:"打ち合わせは午前10時からです。持ち物は資料とパソコンです。", q:"打ち合わせに何を持っていきますか。", opts:["資料とパソコン","パソコンだけ","資料だけ","何も要りません"], a:0},
-];
 
-const QUIZBANK = [
-  {id:"q1", q:"「取引先」の意味は？", opts:["Đối tác kinh doanh","Nhân viên mới","Khách du lịch","Người quản lý"], a:0},
-  {id:"q2", q:"「見積もり」の意味は？", opts:["Hợp đồng","Bản báo giá","Hóa đơn","Biên lai"], a:1},
-  {id:"q3", q:"「納期」の意味は？", opts:["Ngân sách","Doanh thu","Hạn giao hàng","Lợi nhuận"], a:2},
-  {id:"q4", q:"「出張」の意味は？", opts:["Nghỉ phép","Đi công tác","Tăng ca","Họp hành"], a:1},
-  {id:"q5", q:"会議は9時に始まる（　）。", opts:["ことになっています","させていただきます","に応じてです","に伴います"], a:0},
-  {id:"q6", q:"お客様がお帰りに（　）。", opts:["します","なります","いただきます","伴います"], a:1},
-  {id:"q7", q:"明日、発表（　）いただきます。", opts:["させて","されて","させ","して"], a:0},
-  {id:"q8", q:"「損失」の反対の意味に近いのは？", opts:["利益","経費","在庫","発注"], a:0},
-  {id:"q9", q:"「株主」の意味は？", opts:["Cổ đông","Giám đốc","Nhân viên bán hàng","Kế toán"], a:0},
-  {id:"q10", q:"需要（　）生産量を調整します。", opts:["に応じて","に伴い","の際に","の上で"], a:0},
-  {id:"q11", q:"確認した（　）ご連絡します。", opts:["上で","際に","ように","ことになって"], a:0},
-  {id:"q12", q:"「請求書」の意味は？", opts:["Hóa đơn","Biên lai","Hợp đồng","Báo giá"], a:0},
-  {id:"q13", q:"「打ち合わせ」の意味は？", opts:["Đàm phán","Buổi trao đổi công việc","Đề xuất","Đặt hàng"], a:1},
-  {id:"q14", q:"価格改定（　）、通知いたします。", opts:["に伴い","に応じて","ようにします","ことになっています"], a:0},
-  {id:"q15", q:"「部下」の意味は？", opts:["Cấp trên","Cấp dưới","Đồng nghiệp","Khách hàng"], a:1},
-  {id:"q16", q:"ご利用の（　）ご注意ください。", opts:["際に","上で","ように","に応じて"], a:0},
-];
+
+
+
+
+
 
 /* ================= STATE ================= */
 let progress = { knownWords: [], grammarDone: [], listeningDone: [], quizHistory: [] };

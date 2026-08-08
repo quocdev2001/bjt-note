@@ -1,0 +1,13 @@
+const GRAMMAR = [
+  {id:"g1", pattern:"～ていただけますか", meaning:"Nhờ ai đó làm gì một cách lịch sự", expl:"Dùng khi nhờ vả đối phương (khách hàng, cấp trên) làm gì đó một cách rất lịch sự, trang trọng hơn ～てください。", jp:"お待ちいただけますか。", vn:"Anh/chị có thể đợi một chút được không ạ?"},
+  {id:"g2", pattern:"～させていただきます", meaning:"Khiêm nhường khi bản thân thực hiện hành động", expl:"Thể khiêm nhường ngữ, dùng khi người nói xin phép được làm gì đó, thường thấy trong email và họp hành công việc.", jp:"発表させていただきます。", vn:"Tôi xin phép được trình bày."},
+  {id:"g3", pattern:"お/ご＋ Verb/Noun ＋する", meaning:"Khiêm nhường ngữ (kenjougo)", expl:"Hạ thấp hành động của bản thân để thể hiện sự tôn trọng đối phương. Thường dùng với động từ liên quan đến việc phục vụ khách.", jp:"ご案内します。", vn:"Tôi xin hướng dẫn quý khách."},
+  {id:"g4", pattern:"お/ご＋ Verb/Noun ＋になる", meaning:"Tôn kính ngữ (sonkeigo)", expl:"Nâng cao hành động của đối phương (khách hàng, cấp trên) để thể hiện sự kính trọng.", jp:"お客様がお帰りになります。", vn:"Quý khách sẽ ra về."},
+  {id:"g5", pattern:"～ようにする", meaning:"Cố gắng, chú ý để làm gì đó", expl:"Diễn tả ý chí, sự nỗ lực chủ động của người nói để đạt được một thói quen hay kết quả nào đó.", jp:"遅れないようにします。", vn:"Tôi sẽ cố gắng không đến muộn."},
+  {id:"g6", pattern:"～ことになっている", meaning:"Theo quy định/thông lệ là...", expl:"Diễn tả một quy định, nội quy hoặc thông lệ đã được ấn định từ trước, không phải ý muốn cá nhân.", jp:"会議は9時に始まることになっています。", vn:"Theo quy định, cuộc họp bắt đầu lúc 9 giờ."},
+  {id:"g7", pattern:"～に応じて", meaning:"Tùy theo, phù hợp với", expl:"Diễn tả sự thay đổi/điều chỉnh tương ứng theo một điều kiện, tình huống nào đó.", jp:"需要に応じて生産量を調整します。", vn:"Điều chỉnh sản lượng tùy theo nhu cầu."},
+  {id:"g8", pattern:"～上で", meaning:"Sau khi, trên cơ sở đã...", expl:"Diễn tả hành động vế sau được thực hiện sau khi đã hoàn tất và dựa trên cơ sở của hành động vế trước, thường dùng trong văn bản trang trọng.", jp:"確認した上でご連絡します。", vn:"Sau khi xác nhận, tôi sẽ liên lạc lại."},
+  {id:"g9", pattern:"～際に", meaning:"Vào lúc, khi (trang trọng)", expl:"Cách nói trang trọng hơn của ～とき, thường dùng trong hướng dẫn sử dụng, thông báo công việc.", jp:"ご利用の際にご注意ください。", vn:"Xin lưu ý khi sử dụng."},
+  {id:"g10", pattern:"～に伴い", meaning:"Đi kèm với, do sự thay đổi của...", expl:"Diễn tả một sự việc xảy ra kèm theo hoặc là kết quả của một sự thay đổi khác, thường dùng trong thông báo chính thức.", jp:"価格改定に伴い、通知いたします。", vn:"Do việc điều chỉnh giá, chúng tôi xin thông báo."},
+  {id:"g11",pattern:"〜に際して",meaning:"Nhân dịp / khi...",expl:"Dùng khi thực hiện một việc quan trọng hoặc vào một thời điểm đặc biệt.",jp:"入社に際して、必要な書類を提出してください。",vn:"Khi gia nhập công ty, vui lòng nộp các giấy tờ cần thiết." },
+];
